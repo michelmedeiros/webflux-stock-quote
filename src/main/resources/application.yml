@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: stock-quota
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints: 127.0.0.1:9200
+  elasticsearch:
+    rest:
+      uris: http://127.0.0.1:9200
+  cloud:
+    config:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: info, health
+    metrics:
+      binders:
+        hystrix:
+          enabled: false
+
+
+#feign:
+#  client:
+#    config:
+#      default:
+#        connectTimeout: 5000
+#        readTimeout: 5000
+#        loggerLevel: basic
+
+status-invest:
+  url: https://statusinvest.com.br
+
+search:
+  es:
+    config:
+      url: http://localhost:9300
+      threads:
+        io: 30
