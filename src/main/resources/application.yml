@@ -26,14 +26,19 @@ management:
         hystrix:
           enabled: false
 
+logging:
+  level:
+    web: DEBUG
+    org:
+      springframework: DEBUG
 
-#feign:
-#  client:
-#    config:
-#      default:
-#        connectTimeout: 5000
-#        readTimeout: 5000
-#        loggerLevel: basic
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
 
 status-invest:
   url: https://statusinvest.com.br

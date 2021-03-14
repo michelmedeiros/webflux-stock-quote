@@ -1,23 +1,20 @@
 package br.com.webflux.stockquota.service;
 
-import br.com.webflux.stockquota.domain.Quote;
+import br.com.webflux.stockquota.domain.Stock;
+import br.com.webflux.stockquota.domain.StockQuote;
 import br.com.webflux.stockquota.integration.StatusInvestClient;
 import br.com.webflux.stockquota.integration.dto.StockQuotaDTO;
-import br.com.webflux.stockquota.service.StockQuotaService;
+import br.com.webflux.stockquota.repository.StockQuoteRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -26,8 +23,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StockQuotaService {
 
-    private StatusInvestClient statusInvestClient;
-    public List<Quote> getStockQuote(String ticket) {
+    @Autowired
+    private final StatusInvestClient statusInvestClient;
+    @Autowired
+    private final StockQuoteRepository stockQuoteRepository;
+
+    public List<Stock> getStockQuote(String ticket) {
         try {
             final List<StockQuotaDTO> stocks = statusInvestClient.getStock(ticket);
             return stocks.stream().map(this::convertEntity)
@@ -38,11 +39,17 @@ public class StockQuotaService {
         return null;
     }
 
-    private Quote convertEntity(StockQuotaDTO stock) {
-        return Quote.builder()
-                .instant(Instant.now())
-                .price(new BigDecimal(stock.getPrice().replaceAll(",", ".")))
+    private Stock convertEntity(StockQuotaDTO stock) {
+        return Stock.builder()
+                .instant(LocalDateTime.now())
+                .quote(StockQuote.builder()
+                        .price(new BigDecimal(stock.getPrice().replaceAll(",", ".")))
+                        .build())
                 .ticket(stock.getCode())
                 .build();
+    }
+
+    public Mono<Stock> save(Stock stockQuote) {
+        return stockQuoteRepository.save(stockQuote);
     }
 }

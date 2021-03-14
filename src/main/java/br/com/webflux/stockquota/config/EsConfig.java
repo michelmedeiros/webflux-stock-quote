@@ -6,17 +6,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
+import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
+import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 @Configuration
-public class EsConfig {
+@EnableReactiveElasticsearchRepositories
+public class EsConfig extends AbstractReactiveElasticsearchConfiguration {
 
-    @Bean
+    @Value("${spring.data.elasticsearch.client.reactive.endpoints}")
+    private String elassandraHostAndPort;
+
+    @Override
     public ReactiveElasticsearchClient reactiveElasticsearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(elassandraHostAndPort)
@@ -31,23 +37,4 @@ public class EsConfig {
 
         return ReactiveRestClients.create(clientConfiguration);
     }
-
-    @Bean
-    public ElasticsearchConverter elasticsearchConverter() {
-        return new MappingElasticsearchConverter(elasticsearchMappingContext());
-    }
-
-    @Bean
-    public SimpleElasticsearchMappingContext elasticsearchMappingContext() {
-        return new SimpleElasticsearchMappingContext();
-    }
-
-    @Bean
-    public ReactiveElasticsearchOperations reactiveElasticsearchOperations() {
-        return new ReactiveElasticsearchTemplate(reactiveElasticsearchClient(), elasticsearchConverter());
-    }
-
-    @Value("${spring.data.elasticsearch.client.reactive.endpoints}")
-    private String elassandraHostAndPort;
-
 }
