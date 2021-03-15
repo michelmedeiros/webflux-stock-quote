@@ -9,9 +9,6 @@ import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClient
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
-import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
-import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
@@ -36,5 +33,10 @@ public class EsConfig extends AbstractReactiveElasticsearchConfiguration {
                 .build();
 
         return ReactiveRestClients.create(clientConfiguration);
+    }
+
+    @Bean
+    public ReactiveElasticsearchOperations elasticsearchTemplate() {
+        return new ReactiveElasticsearchTemplate(reactiveElasticsearchClient());
     }
 }

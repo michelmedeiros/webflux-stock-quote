@@ -4,7 +4,7 @@ import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockDividend;
 import br.com.webflux.stockquota.domain.StockQuote;
 import br.com.webflux.stockquota.domain.StockStats;
-import br.com.webflux.stockquota.repository.StockQuoteRepository;
+import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import yahoofinance.YahooFinance;
 
-import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -22,7 +21,7 @@ import java.util.Objects;
 @Service
 public class YahooFinancialQuoteService {
 
-    private final StockQuoteRepository stockQuoteRepository;
+    private final StockQuoteReactiveRepository stockQuoteRepository;
 
     public Mono<Stock> getYahooFinanceStockQuote(String ticket) {
         try {
@@ -55,7 +54,6 @@ public class YahooFinancialQuoteService {
 
     private Stock convertEntity(yahoofinance.Stock stock) {
         return Stock.builder()
-                .instant(LocalDateTime.now())
                 .ticket(getFormattedSymbol(stock.getSymbol()))
                 .name(stock.getName())
                 .currency(stock.getCurrency())
@@ -110,7 +108,6 @@ public class YahooFinancialQuoteService {
         final yahoofinance.quotes.stock.StockQuote quote = stock.getQuote();
         return StockQuote.builder()
                 .symbol(getFormattedSymbol(stock.getSymbol()))
-                .timeZone(quote.getTimeZone())
                 .ask(quote.getAsk())
                 .askSize(quote.getAskSize())
                 .bid(quote.getBid())

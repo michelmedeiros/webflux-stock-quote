@@ -21,7 +21,13 @@ public class StockStats {
     private Long sharesOutstanding;
     private Long sharesOwned;
 
+    /**
+     *  Os ganhos por ação.
+     */
     private BigDecimal eps;
+    /**
+     * A relação preço/lucro.
+     */
     private BigDecimal pe;
     private BigDecimal peg;
 

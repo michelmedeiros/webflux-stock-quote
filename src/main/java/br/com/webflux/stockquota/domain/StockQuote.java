@@ -27,7 +27,6 @@ import java.util.TimeZone;
 public class StockQuote {
 
     private String symbol;
-    private TimeZone timeZone;
     private BigDecimal ask;
     private Long askSize;
     private BigDecimal bid;

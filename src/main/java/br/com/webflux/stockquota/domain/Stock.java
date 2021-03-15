@@ -21,7 +21,6 @@ public class Stock {
     @Id
     private String id;
     private String ticket;
-    private LocalDateTime instant;
     private String name;
     private String currency;
     private String stockExchange;
