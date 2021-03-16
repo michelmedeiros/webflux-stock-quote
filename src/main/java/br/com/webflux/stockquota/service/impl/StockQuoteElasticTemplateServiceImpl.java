@@ -20,16 +20,23 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 @Service
 @RequiredArgsConstructor
 public class StockQuoteElasticTemplateServiceImpl implements StockQuoteElasticTemplateService {
-    @Autowired
+
     private final ReactiveElasticsearchTemplate elasticsearchTemplate;
 
     @Override
     public Flux<Stock> searchByTemplate(String ticket) {
-        final NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQuery("ticket", ticket.toUpperCase()))
-                .build();
-        final Flux<SearchHit<Stock>> stockFlux = elasticsearchTemplate
-                .search(searchQuery, Stock.class, IndexCoordinates.of("stock_idx"));
-        return stockFlux.map(SearchHit::getContent);
+        return null;
     }
+//    @Autowired
+//    private final ReactiveElasticsearchTemplate elasticsearchTemplate;
+//
+//    @Override
+//    public Flux<Stock> searchByTemplate(String ticket) {
+//        final NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(matchQuery("ticket", ticket.toUpperCase()))
+//                .build();
+//        final Flux<SearchHit<Stock>> stockFlux = elasticsearchTemplate
+//                .search(searchQuery, Stock.class, IndexCoordinates.of("stock_idx"));
+//        return stockFlux.map(SearchHit::getContent);
+//    }
 }
