@@ -1,7 +1,7 @@
 package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
-import br.com.webflux.stockquota.service.StockQuoteService;
+import br.com.webflux.stockquota.service.StatusInvestStockQuoteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StockQuotaController {
 
-    private StockQuoteService stockQuotaService;
+    private StatusInvestStockQuoteService stockQuotaService;
 
     @GetMapping("/{ticket}")
     public List<Stock> getStocks(@PathVariable String ticket) {
