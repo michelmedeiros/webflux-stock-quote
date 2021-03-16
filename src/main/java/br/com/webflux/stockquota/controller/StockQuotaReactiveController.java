@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class StockQuotaReactiveController {
 
-    private StockQuoteReactiveService stockQuotaReactiveService;
-    private YahooFinancialQuoteService yahooFinancialQuoteService;
+    private final StockQuoteReactiveService stockQuotaReactiveService;
+    private final YahooFinancialQuoteService yahooFinancialQuoteService;
 
     @GetMapping("/search/client/{ticket}")
     public Flux<Stock> searchStockClient(@PathVariable String ticket) throws JsonProcessingException {
