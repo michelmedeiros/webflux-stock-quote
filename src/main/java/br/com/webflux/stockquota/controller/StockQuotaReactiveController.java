@@ -2,7 +2,7 @@ package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.service.StockQuoteReactiveService;
-import br.com.webflux.stockquota.service.YahooFinancialQuoteService;
+import br.com.webflux.stockquota.service.impl.YahooFinancialQuoteServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,19 +11,17 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/stocks/reactive")
 @AllArgsConstructor
 public class StockQuotaReactiveController {
 
     private StockQuoteReactiveService stockQuotaReactiveService;
-    private YahooFinancialQuoteService yahooFinancialQuoteService;
+    private YahooFinancialQuoteServiceImpl yahooFinancialQuoteService;
 
     @GetMapping("/search/client/{ticket}")
     public Flux<Stock> searchStockClient(@PathVariable String ticket) throws JsonProcessingException {
-        return stockQuotaReactiveService.searchByElaticClient(ticket)
+        return stockQuotaReactiveService.searchByElasticClient(ticket)
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 
@@ -31,17 +29,6 @@ public class StockQuotaReactiveController {
     public Mono<Stock> searchStockMono(@PathVariable String ticket) {
         return stockQuotaReactiveService.getStockByTicketName(ticket)
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
-    }
-
-    @GetMapping("/search/{ticket}")
-    public Flux<Stock> searchStock(@PathVariable String ticket) throws JsonProcessingException {
-        return stockQuotaReactiveService.searchByTemplate(ticket)
-                .switchIfEmpty(fluxResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
-    }
-
-    @GetMapping("/{ticket}")
-    public List<Stock> getStocks(@PathVariable String ticket) {
-        return stockQuotaReactiveService.getStockQuote(ticket);
     }
 
     @GetMapping("yahoo/{ticket}")

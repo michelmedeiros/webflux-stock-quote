@@ -1,4 +1,4 @@
-package br.com.webflux.stockquota.service;
+package br.com.webflux.stockquota.service.impl;
 
 import br.com.webflux.stockquota.domain.Stock;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 
 @Service
-public class QuotaGeneratorService {
+public class QuotaGeneratorServiceImpl {
     public Flux<Stock> fetchQuoteStream(Duration period) {
         return null;
     }
