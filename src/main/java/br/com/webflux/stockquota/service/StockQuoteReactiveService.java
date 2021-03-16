@@ -34,7 +34,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class StockQuotaReactiveService {
+public class StockQuoteReactiveService {
 
     @Autowired
     private final StatusInvestClient statusInvestClient;
@@ -46,6 +46,10 @@ public class StockQuotaReactiveService {
     private final ReactiveElasticsearchClient client;
     @Autowired
     private final ObjectMapper objectMapper;
+
+    public Mono<Stock> getStockByTicketName(String ticket) {
+        return stockQuoteRepository.findFirstByTicket(ticket);
+    }
 
     public List<Stock> getStockQuote(String ticket) {
         try {
@@ -78,17 +82,6 @@ public class StockQuotaReactiveService {
         final Flux<SearchHit<Stock>> stockFlux = elasticsearchTemplate
                 .search(searchQuery, Stock.class, IndexCoordinates.of("stock_idx"));
         return stockFlux.map(SearchHit::getContent);
-    }
-
-    public Flux<Stock> searchBySpringData(String ticket) {
-        final NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQuery("ticket", ticket.toUpperCase()))
-                .build();
-
-        final Flux<SearchHit<Stock>> stockHits = elasticsearchTemplate
-                .search(searchQuery, Stock.class, IndexCoordinates.of("stock_idx"));
-
-        return stockHits.map(SearchHit::getContent);
     }
 
     public Flux<Stock> searchByElaticClient(String ticket) throws JsonProcessingException {

@@ -1,7 +1,7 @@
 package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
-import br.com.webflux.stockquota.service.StockQuotaReactiveService;
+import br.com.webflux.stockquota.service.StockQuoteReactiveService;
 import br.com.webflux.stockquota.service.YahooFinancialQuoteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
@@ -18,9 +18,20 @@ import java.util.List;
 @AllArgsConstructor
 public class StockQuotaReactiveController {
 
-    private StockQuotaReactiveService stockQuotaReactiveService;
+    private StockQuoteReactiveService stockQuotaReactiveService;
     private YahooFinancialQuoteService yahooFinancialQuoteService;
 
+    @GetMapping("/search/client/{ticket}")
+    public Flux<Stock> searchStockClient(@PathVariable String ticket) throws JsonProcessingException {
+        return stockQuotaReactiveService.searchByElaticClient(ticket)
+                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
+    }
+
+    @GetMapping("/search/mono/{ticket}")
+    public Mono<Stock> searchStockMono(@PathVariable String ticket) {
+        return stockQuotaReactiveService.getStockByTicketName(ticket)
+                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
+    }
 
     @GetMapping("/search/{ticket}")
     public Flux<Stock> searchStock(@PathVariable String ticket) throws JsonProcessingException {
