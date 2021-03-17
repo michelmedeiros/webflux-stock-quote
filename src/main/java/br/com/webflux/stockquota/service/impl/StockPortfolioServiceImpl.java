@@ -74,6 +74,7 @@ public class StockPortfolioServiceImpl implements StockPortfolioService {
                 .profitability(item.getProfitability())
                 .purchasePrice(item.getPurchasePrice())
                 .quantity(item.getQuantity())
+                .profitabilityPercentage(item.getProfitabilityPercentage())
                 .build();
     }
 
