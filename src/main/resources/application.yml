@@ -8,12 +8,22 @@ spring:
       client:
         reactive:
           endpoints: 127.0.0.1:9200
+      properties:
+        index:
+          search:
+            slowlog:
+              threshold:
+                query:
+                  info: 1ms
   elasticsearch:
     rest:
       uris: http://127.0.0.1:9200
   cloud:
     config:
       enabled: false
+
+
+
 
 management:
   endpoints:
@@ -31,6 +41,17 @@ logging:
     web: DEBUG
     org:
       springframework: DEBUG
+      elasticsearch:
+        index:
+          search:
+            slowlog:
+              query: INFO
+        data:
+          elasticsearch:
+            core: DEBUG
+
+
+
 
 feign:
   client:

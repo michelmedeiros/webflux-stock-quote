@@ -4,10 +4,7 @@ import br.com.webflux.stockquota.domain.StockPortfolio;
 import br.com.webflux.stockquota.dto.StockPortfolioDTO;
 import br.com.webflux.stockquota.service.StockPortfolioService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -17,8 +14,13 @@ public class StockPortfolioController {
 
     private final StockPortfolioService stockPortfolioService;
 
-    @PostMapping
+    @PostMapping("/generate")
     public Mono<StockPortfolio> saveStockPortfolio(@RequestBody StockPortfolioDTO stockPortfolioDTO) {
         return stockPortfolioService.generate(stockPortfolioDTO);
+    }
+
+    @PutMapping("/synchronize")
+    public Mono<StockPortfolio> synchronizeStockPortfolio(@RequestBody StockPortfolioDTO stockPortfolioDTO) {
+        return stockPortfolioService.synchronize(stockPortfolioDTO);
     }
 }

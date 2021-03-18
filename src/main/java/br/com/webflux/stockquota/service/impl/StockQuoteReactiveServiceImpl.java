@@ -2,7 +2,6 @@ package br.com.webflux.stockquota.service.impl;
 
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
-import br.com.webflux.stockquota.integration.dto.StockQuoteDTO;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
 import br.com.webflux.stockquota.service.StockQuoteReactiveService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,7 +24,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.Objects;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 

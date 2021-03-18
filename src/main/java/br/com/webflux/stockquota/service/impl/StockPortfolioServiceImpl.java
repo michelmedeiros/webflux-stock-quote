@@ -1,27 +1,28 @@
 package br.com.webflux.stockquota.service.impl;
 
 import br.com.webflux.stockquota.converters.StockConverter;
+import br.com.webflux.stockquota.converters.StockPortfolioConverter;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockPortfolio;
-import br.com.webflux.stockquota.domain.StockPortfolioItem;
 import br.com.webflux.stockquota.dto.StockPortfolioDTO;
-import br.com.webflux.stockquota.dto.StockPortfolioItemDTO;
+import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.repository.StockPortfolioReactiveRepository;
 import br.com.webflux.stockquota.service.StockPortfolioService;
 import br.com.webflux.stockquota.utils.StockUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import yahoofinance.YahooFinance;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,18 +30,41 @@ import java.util.stream.Collectors;
 public class StockPortfolioServiceImpl implements StockPortfolioService {
 
     private StockPortfolioReactiveRepository stockPortfolioRepository;
+    private final ObjectMapper objectMapper;
+
     @Override
     public Mono<StockPortfolio> generate(StockPortfolioDTO stockPortfolioDTO) {
         try {
-            this.processItems(stockPortfolioDTO);
-            return stockPortfolioRepository.save(createPortfolio(stockPortfolioDTO));
+            final StockPortfolio stockPortfolio = this.processItems(stockPortfolioDTO);
+            return stockPortfolioRepository.save(stockPortfolio);
         } catch (Exception ex) {
             log.error("Error to generated stock portfolio", ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void processItems(StockPortfolioDTO stockPortfolioDTO) {
+    @Override
+    public Mono<StockPortfolio> synchronize(StockPortfolioDTO stockPortfolioDTO) {
+        final StockPortfolio stockPortfolioProcess = this.processItems(stockPortfolioDTO);
+        stockPortfolioProcess.setUpdateAt(new Date());
+        return this.getStockPortfolio(stockPortfolioDTO.getId())
+                .map(stockPortfolioFound -> stockPortfolioProcess.withId(stockPortfolioFound.getId()))
+                .flatMap(stockPortfolioRepository::save)
+                .thenReturn(stockPortfolioProcess);
+    }
+
+    public <T> Mono<T> monoResponseStatusNotFoundException(){
+        return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,"StockPortfolio not found"));
+    }
+
+    private Mono<StockPortfolio> getStockPortfolio(String id) {
+        if(Objects.nonNull(id)) {
+            return this.stockPortfolioRepository.findById(id).switchIfEmpty(monoResponseStatusNotFoundException());
+        }
+        return Mono.empty();
+    }
+
+    private StockPortfolio processItems(StockPortfolioDTO stockPortfolioDTO) {
         stockPortfolioDTO.getItems().forEach(item -> {
             var stock = this.getStock(item.getTicket());
             item.setLastPrice(stock.getQuote().getPrice());
@@ -50,32 +74,7 @@ public class StockPortfolioServiceImpl implements StockPortfolioService {
             item.setProfitabilityPercentage(item.getProfitability().doubleValue() /
                     item.getPurchasePrice().doubleValue());
         });
-    }
-
-    private StockPortfolio createPortfolio(StockPortfolioDTO stockPortfolioDTO) {
-        return StockPortfolio.builder()
-                .createdAt(LocalDateTime.now())
-                .name(stockPortfolioDTO.getName())
-                .items(createItemsPortfolio(stockPortfolioDTO.getItems()))
-                .build();
-    }
-
-    private Set<StockPortfolioItem> createItemsPortfolio(Set<StockPortfolioItemDTO> items) {
-        return items.stream().map(this::convertEntity)
-                .collect(Collectors.toSet());
-    }
-
-    private StockPortfolioItem convertEntity(StockPortfolioItemDTO item) {
-        return StockPortfolioItem.builder()
-                .ticket(item.getTicket())
-                .averagePrice(item.getAveragePrice())
-                .currentPosition(item.getCurrentPosition())
-                .lastPrice(item.getLastPrice())
-                .profitability(item.getProfitability())
-                .purchasePrice(item.getPurchasePrice())
-                .quantity(item.getQuantity())
-                .profitabilityPercentage(item.getProfitabilityPercentage())
-                .build();
+        return StockPortfolioConverter.convertEntity(stockPortfolioDTO);
     }
 
     private Stock getStock(String ticket) {
