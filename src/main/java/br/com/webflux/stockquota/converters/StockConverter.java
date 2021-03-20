@@ -4,8 +4,45 @@ import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockDividend;
 import br.com.webflux.stockquota.domain.StockQuote;
 import br.com.webflux.stockquota.domain.StockStats;
+import br.com.webflux.stockquota.integration.dto.StockDTO;
+import br.com.webflux.stockquota.integration.dto.StockQuoteDTO;
 
 public class StockConverter {
+
+
+    public static Stock convertEntity(StockDTO stock) {
+        return Stock.builder()
+                .ticket(getFormattedSymbol(stock.getTicket()))
+                .name(stock.getName())
+                .currency(stock.getCurrency())
+                .stockExchange(stock.getStockExchange())
+                .quote(createQuote(stock.getQuote()))
+                .build();
+    }
+
+    private static StockQuote createQuote(StockQuoteDTO quote) {
+        return StockQuote.builder()
+                .symbol(getFormattedSymbol(quote.getSymbol()))
+                .ask(quote.getAsk())
+                .askSize(quote.getAskSize())
+                .bid(quote.getBid())
+                .bidSize(quote.getBidSize())
+                .price(quote.getPrice())
+                .lastTradeSize(quote.getLastTradeSize())
+                .lastTradeDateStr(quote.getLastTradeDateStr())
+                .lastTradeTimeStr(quote.getLastTradeTimeStr())
+                .open(quote.getOpen())
+                .previousClose(quote.getPreviousClose())
+                .dayLow(quote.getDayLow())
+                .dayHigh(quote.getDayHigh())
+                .yearHigh(quote.getYearHigh())
+                .yearLow(quote.getYearLow())
+                .priceAvg50(quote.getPriceAvg50())
+                .priceAvg200(quote.getPriceAvg200())
+                .volume(quote.getVolume())
+                .avgVolume(quote.getAvgVolume())
+                .build();
+    }
 
     public static Stock convertEntity(yahoofinance.Stock stock) {
         return Stock.builder()

@@ -1,6 +1,5 @@
 package br.com.webflux.stockquota.integration.dto;
 
-import br.com.webflux.stockquota.domain.StockQuote;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;

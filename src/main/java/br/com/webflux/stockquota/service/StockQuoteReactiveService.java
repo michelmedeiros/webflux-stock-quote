@@ -7,7 +7,8 @@ import reactor.core.publisher.Mono;
 
 public interface StockQuoteReactiveService {
     Mono<Stock> getStockByTicketName(String ticket);
-    Mono<Stock> save(Stock stockQuote);
+    Mono<Stock> save(StockDTO stockQuote);
     Mono<StockDTO> searchByElasticClient(String ticket);
     Flux<Stock> searchByTemplate(String ticket);
+    Flux<Stock> searchAll();
 }

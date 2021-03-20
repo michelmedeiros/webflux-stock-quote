@@ -26,6 +26,12 @@ public class StockQuotaReactiveController {
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 
+    @GetMapping("/search")
+    public Flux<Stock> searchStocks() {
+        return stockQuotaReactiveService.searchAll()
+                .switchIfEmpty(fluxResponseStatusNotFoundException("Stocks not found"));
+    }
+
     @GetMapping("/search/{ticket}")
     public Flux<Stock> searchStock(@PathVariable String ticket) {
         return stockQuotaReactiveService.searchByTemplate(ticket)
@@ -54,8 +60,12 @@ public class StockQuotaReactiveController {
         return Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, messageFormat));
     }
 
+    private <T> Flux<T> fluxResponseStatusNotFoundException(String message) {
+        return Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, message));
+    }
+
     @PostMapping()
-    public Mono<Stock> createStockQuote(@RequestBody Stock stockQuote) {
+    public Mono<Stock> createStockQuote(@RequestBody StockDTO stockQuote) {
         return stockQuotaReactiveService.save(stockQuote);
     }
 

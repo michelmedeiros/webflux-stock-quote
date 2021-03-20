@@ -42,10 +42,13 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
     }
 
     private Mono<Stock> save(Stock stockQuote) {
-        final Mono<Stock> firstByTicket = this.stockQuoteRepository
-                .findFirstByTicket(stockQuote.getTicket().toLowerCase());
-        return firstByTicket.doOnSuccess(stockQuoteRepository::delete)
-                .switchIfEmpty(this.stockQuoteRepository.save(stockQuote));
+        this.deleteExistingStock(stockQuote);
+        return stockQuoteRepository.save(stockQuote);
     }
 
+    private void deleteExistingStock(Stock stockQuote) {
+        this.stockQuoteRepository
+                .findFirstByTicket(stockQuote.getTicket().toLowerCase())
+                .map(stockQuoteRepository::delete);
+    }
 }

@@ -1,5 +1,6 @@
 package br.com.webflux.stockquota.service.impl;
 
+import br.com.webflux.stockquota.converters.StockConverter;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
@@ -50,13 +51,18 @@ public class StockQuoteReactiveServiceImpl implements StockQuoteReactiveService 
     }
 
     @Override
+    public Flux<Stock> searchAll() {
+        return stockQuoteRepository.findAll();
+    }
+
+    @Override
     public Mono<Stock> getStockByTicketName(String ticket) {
         return stockQuoteRepository.findFirstByTicket(ticket);
     }
 
     @Override
-    public Mono<Stock> save(Stock stockQuote) {
-        return stockQuoteRepository.save(stockQuote);
+    public Mono<Stock> save(StockDTO stockQuote) {
+        return stockQuoteRepository.save(StockConverter.convertEntity(stockQuote));
     }
 
     @Override
