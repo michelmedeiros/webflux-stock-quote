@@ -1,6 +1,6 @@
 spring:
   application:
-    name: stock-quota
+    name: stock-quota-reactive
   main:
     allow-bean-definition-overriding: true
   data:
@@ -23,8 +23,6 @@ spring:
       enabled: false
 
 
-
-
 management:
   endpoints:
     web:
@@ -40,7 +38,6 @@ logging:
   level:
     web: DEBUG
     org:
-      springframework: DEBUG
       elasticsearch:
         index:
           search:

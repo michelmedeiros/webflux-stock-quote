@@ -20,6 +20,11 @@ public class StockQuotaReactiveController {
     private final StockQuoteReactiveService stockQuotaReactiveService;
     private final YahooFinancialQuoteServiceImpl yahooFinancialQuoteService;
 
+    @PostMapping()
+    public Mono<Stock> createStockQuote(@RequestBody StockDTO stockQuote) {
+        return stockQuotaReactiveService.save(stockQuote);
+    }
+
     @GetMapping("/search/client/{ticket}")
     public Mono<StockDTO> searchStockClient(@PathVariable String ticket) {
         return stockQuotaReactiveService.searchByElasticClient(ticket)
@@ -62,11 +67,6 @@ public class StockQuotaReactiveController {
 
     private <T> Flux<T> fluxResponseStatusNotFoundException(String message) {
         return Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, message));
-    }
-
-    @PostMapping()
-    public Mono<Stock> createStockQuote(@RequestBody StockDTO stockQuote) {
-        return stockQuotaReactiveService.save(stockQuote);
     }
 
 }

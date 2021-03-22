@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface StockQuoteReactiveRepository extends ReactiveCrudRepository<Stock, String> {
+public interface StockQuoteReactiveRepository extends ReactiveElasticsearchRepository<Stock, String> {
     Mono<Stock> findFirstByTicket(String ticket);
 }

@@ -9,7 +9,6 @@ import br.com.webflux.stockquota.integration.dto.StockQuoteDTO;
 
 public class StockConverter {
 
-
     public static Stock convertEntity(StockDTO stock) {
         return Stock.builder()
                 .ticket(getFormattedSymbol(stock.getTicket()))

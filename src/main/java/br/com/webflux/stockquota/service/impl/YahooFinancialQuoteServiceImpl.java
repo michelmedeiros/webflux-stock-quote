@@ -1,10 +1,7 @@
 package br.com.webflux.stockquota.service.impl;
 
 import br.com.webflux.stockquota.converters.StockConverter;
-import br.com.webflux.stockquota.domain.Stock;
-import br.com.webflux.stockquota.domain.StockDividend;
-import br.com.webflux.stockquota.domain.StockQuote;
-import br.com.webflux.stockquota.domain.StockStats;
+import br.com.webflux.stockquota.domain.*;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
 import br.com.webflux.stockquota.service.YahooFinancialQuoteService;
 import br.com.webflux.stockquota.utils.StockUtils;
@@ -27,28 +24,34 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
     private final StockQuoteReactiveRepository stockQuoteRepository;
 
     @Override
-    public Mono<Stock> getYahooFinanceStockQuote(String ticket) {
+    public Mono<Stock> getYahooFinanceStockQuote(String ticker) {
         try {
-            final yahoofinance.Stock stock = YahooFinance.get(StockUtils.getFormattedTicket(ticket));
-            if(Objects.nonNull(stock)) {
-                final Stock stockQuote = StockConverter.convertEntity(stock);
-                return this.save(stockQuote);
-            }
+            return Mono.justOrEmpty(YahooFinance.get(StockUtils.getFormattedTicket(ticker)))
+                    .map(StockConverter::convertEntity)
+                    .flatMap(this::save)
+                    .switchIfEmpty(monoResponseStatusNotFoundException(ticker));
         } catch (Exception ex) {
             log.error("Error to call Yahoo Finance", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return Mono.empty();
+    }
+
+    public <T> Mono<T> monoResponseStatusNotFoundException(String ticker) {
+        var message = String.format("Stock by ticket not found %s", ticker);
+        return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, message));
     }
 
     private Mono<Stock> save(Stock stockQuote) {
-        this.deleteExistingStock(stockQuote);
-        return stockQuoteRepository.save(stockQuote);
+        return this.getStock(stockQuote.getTicket().toLowerCase())
+                .flatMap(stock -> stockQuoteRepository.save(stockQuote.withId(stock.getId())))
+                .switchIfEmpty(stockQuoteRepository.save(stockQuote));
     }
 
-    private void deleteExistingStock(Stock stockQuote) {
-        this.stockQuoteRepository
-                .findFirstByTicket(stockQuote.getTicket().toLowerCase())
-                .map(stockQuoteRepository::delete);
+
+    private Mono<Stock> getStock(String ticket) {
+        if(Objects.nonNull(ticket)) {
+            return this.stockQuoteRepository.findFirstByTicket(ticket);
+        }
+        return Mono.empty();
     }
 }
