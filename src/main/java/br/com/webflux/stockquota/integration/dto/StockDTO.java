@@ -9,13 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties
-public class StockQuotaDTO {
+public class StockDTO {
     private long id;
     private String name;
+    private String ticket;
+    private String currency;
+    private String stockExchange;
     private String normalizedName;
     private String code;
     private String price;
     private String variation;
+    private StockQuoteDTO quote;
+
 }
 
 

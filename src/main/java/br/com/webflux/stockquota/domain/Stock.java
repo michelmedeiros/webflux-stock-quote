@@ -1,20 +1,16 @@
 package br.com.webflux.stockquota.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@With
 @Document(indexName = "stock_idx")
 public class Stock {
     public static final MathContext MATH_CONTEXT = new MathContext(2);
