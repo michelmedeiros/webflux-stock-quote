@@ -51,7 +51,9 @@ public class StockQuotaReactiveController {
 
     @GetMapping("yahoo/{ticket}")
     public Mono<Stock> getStock(@PathVariable String ticket) {
-        return yahooFinancialQuoteService.getYahooFinanceStockQuote(ticket)
+//        return yahooFinancialQuoteService.getYahooFinanceStockQuote(ticket)
+//                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
+        return yahooFinancialQuoteService.getYahooFinanceStockQuoteNonReactive(ticket)
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 

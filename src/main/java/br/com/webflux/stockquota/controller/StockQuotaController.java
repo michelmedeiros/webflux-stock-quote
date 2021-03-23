@@ -17,9 +17,9 @@ public class StockQuotaController {
 
     private StatusInvestStockQuoteService stockQuotaService;
 
-    @GetMapping("/{ticket}")
+    @GetMapping("/statusInvest/{ticket}")
     public List<Stock> getStocks(@PathVariable String ticket) {
-        return stockQuotaService.getStockQuote(ticket);
+        return stockQuotaService.getStatusInvestStockQuote(ticket);
     }
 
 }

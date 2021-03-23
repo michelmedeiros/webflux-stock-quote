@@ -5,5 +5,5 @@ import br.com.webflux.stockquota.domain.Stock;
 import java.util.List;
 
 public interface StatusInvestStockQuoteService {
-    List<Stock> getStockQuote(String ticket);
+    List<Stock> getStatusInvestStockQuote(String ticket);
 }

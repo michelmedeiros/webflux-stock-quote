@@ -21,7 +21,7 @@ public class StatusInvestStockQuoteServiceImpl implements StatusInvestStockQuote
 
     private final StatusInvestClient statusInvestClient;
     @Override
-    public List<Stock> getStockQuote(String ticket) {
+    public List<Stock> getStatusInvestStockQuote(String ticket) {
         try {
             final List<StockDTO> stocks = statusInvestClient.getStock(ticket);
             return stocks.stream().map(this::convertEntity)
