@@ -52,10 +52,6 @@ logging:
         data:
           elasticsearch:
             core: DEBUG
-
-
-
-
 feign:
   client:
     config:

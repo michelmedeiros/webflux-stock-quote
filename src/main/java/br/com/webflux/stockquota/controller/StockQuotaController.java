@@ -1,12 +1,12 @@
 package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
+import br.com.webflux.stockquota.domain.StockStatistics;
 import br.com.webflux.stockquota.service.StatusInvestStockQuoteService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -18,8 +18,13 @@ public class StockQuotaController {
     private StatusInvestStockQuoteService stockQuotaService;
 
     @GetMapping("/statusInvest/{ticket}")
-    public List<Stock> getStocks(@PathVariable String ticket) {
+    public Flux<Stock> getStocks(@PathVariable String ticket) {
         return stockQuotaService.getStatusInvestStockQuote(ticket);
+    }
+
+    @GetMapping("/statusInvest/statistics")
+    public  Flux<StockStatistics> generateStocksStatistics() {
+        return stockQuotaService.generateStockStatistics();
     }
 
 }
