@@ -30,6 +30,7 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
             log.info("Starting execution search by ticker {}", ticker);
             return Mono.justOrEmpty(getYahooStock(ticker))
                     .map(StockConverter::convertEntity)
+                    .doOnError(this::monoResponseStatusException)
                     .flatMap(this::save)
                     .switchIfEmpty(monoResponseStatusNotFoundException(ticker));
         } catch (Exception ex) {
@@ -38,6 +39,10 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
         } finally {
             log.info("Finished save stock in ES");
         }
+    }
+
+    private void monoResponseStatusException(Throwable throwable) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, throwable.getMessage());
     }
 
     @Override

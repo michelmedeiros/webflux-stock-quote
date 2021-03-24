@@ -22,6 +22,12 @@ spring:
     config:
       enabled: false
 
+server:
+  error:
+    include-message: ALWAYS
+  compression:
+    enable: true
+    mine-types: application/json
 
 management:
   endpoints:
