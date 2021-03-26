@@ -7,24 +7,30 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/statusInvest")
 @AllArgsConstructor
-public class StockQuotaController {
+public class StockStatusInvestController {
 
     private StatusInvestStockQuoteService stockQuotaService;
 
-    @GetMapping("/statusInvest/{ticket}")
-    public Flux<Stock> getStocks(@PathVariable String ticket) {
-        return stockQuotaService.getStatusInvestStockQuote(ticket);
+    @GetMapping("/stocks/{ticker}")
+    public Flux<Stock> getStocks(@PathVariable String ticker) {
+        return stockQuotaService.getStatusInvestStockQuote(ticker);
     }
 
-    @GetMapping("/statusInvest/statistics")
+    @GetMapping("/statistics/generate")
     public  Flux<StockStatistics> generateStocksStatistics() {
         return stockQuotaService.generateStockStatistics();
+    }
+
+    @GetMapping("/statistics/{ticker}")
+    public Mono<StockStatistics> getStocksStatisticsByTicker(@PathVariable String ticker) {
+        return stockQuotaService.getStockStatisticByTicker(ticker);
     }
 
 }

@@ -5,7 +5,6 @@ import br.com.webflux.stockquota.converters.StockPortfolioConverter;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockPortfolio;
 import br.com.webflux.stockquota.dto.StockPortfolioDTO;
-import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.repository.StockPortfolioReactiveRepository;
 import br.com.webflux.stockquota.service.StockPortfolioService;
 import br.com.webflux.stockquota.utils.StockUtils;
@@ -14,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import yahoofinance.YahooFinance;
@@ -22,7 +20,6 @@ import yahoofinance.YahooFinance;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service

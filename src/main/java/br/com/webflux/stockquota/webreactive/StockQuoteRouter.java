@@ -14,9 +14,12 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class StockQuoteRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> route(StockQuoteHandler handler){
-        return RouterFunctions
-                .route(GET("/reactive/quotes/{ticket}")
-                        .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicket);
+    public RouterFunction<ServerResponse> route(StockQuoteHandler handler) {
+        return RouterFunctions.route(GET("/client/search/{ticket}")
+                .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicket)
+                .andRoute(GET("/client/statistics/{ticker}")
+                        .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicker);
+
     }
+
 }

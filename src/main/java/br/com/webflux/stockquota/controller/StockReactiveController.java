@@ -13,12 +13,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/stocks/reactive")
+@RequestMapping("/stocks")
 @AllArgsConstructor
-public class StockQuotaReactiveController {
+public class StockReactiveController {
 
     private final StockQuoteReactiveService stockQuotaReactiveService;
-    private final YahooFinancialQuoteServiceImpl yahooFinancialQuoteService;
 
     @PostMapping()
     public Mono<Stock> createStockQuote(@RequestBody StockDTO stockQuote) {
@@ -31,30 +30,22 @@ public class StockQuotaReactiveController {
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/all")
     public Flux<Stock> searchStocks() {
         return stockQuotaReactiveService.searchAll()
                 .switchIfEmpty(fluxResponseStatusNotFoundException("Stocks not found"));
     }
 
-    @GetMapping("/search/{ticket}")
+    @GetMapping("/search/template/{ticket}")
     public Flux<Stock> searchStock(@PathVariable String ticket) {
         return stockQuotaReactiveService.searchByTemplate(ticket)
                 .switchIfEmpty(fluxResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 
-    @GetMapping("/search/mono/{ticket}")
+    @GetMapping("/search/{ticket}")
     public Mono<Stock> searchStockMono(@PathVariable String ticket) {
         return stockQuotaReactiveService.getStockByTicketName(ticket)
                 .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
-    }
-
-    @GetMapping("yahoo/{ticket}")
-    public Mono<Stock> getStock(@PathVariable String ticket) {
-        return yahooFinancialQuoteService.getYahooFinanceStockQuote(ticket)
-                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
-//        return yahooFinancialQuoteService.getYahooFinanceStockQuoteNonReactive(ticket)
-//                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
     }
 
     private <T> Mono<T> monoResponseStatusNotFoundException(String message, Object param) {

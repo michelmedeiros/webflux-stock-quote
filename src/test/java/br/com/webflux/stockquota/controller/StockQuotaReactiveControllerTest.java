@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
-@WebFluxTest(StockQuotaReactiveController.class)
+@WebFluxTest(StockReactiveController.class)
 @Import({StatusInvestClient.class, StockQuoteReactiveServiceImpl.class, YahooFinancialQuoteServiceImpl.class, CustomAttributes.class})
 public class StockQuotaReactiveControllerTest {
 

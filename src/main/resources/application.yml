@@ -23,18 +23,24 @@ spring:
       enabled: false
 
 server:
+  netty:
+    connection-timeout: 120s
   error:
     include-message: ALWAYS
   compression:
     enable: true
-    mine-types: application/json
+    min-response-size: 2KB
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
 
 management:
   endpoints:
+    enabled-by-default: true
+    shutdown:
+      enabled: true
     web:
       base-path: /management
       exposure:
-        include: info, health
+        include: "*"
     metrics:
       binders:
         hystrix:
@@ -42,6 +48,7 @@ management:
 
 logging:
   level:
+    root: INFO
     web: DEBUG
     org:
       elasticsearch:
