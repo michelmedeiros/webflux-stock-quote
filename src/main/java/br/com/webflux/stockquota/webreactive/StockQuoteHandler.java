@@ -25,7 +25,7 @@ public class StockQuoteHandler {
     private final StatusInvestStockService statusInvestStockService;
 
     public Mono<ServerResponse> generateStocks(ServerRequest request) {
-        String ticket = request.pathVariable("ticket");
+        String ticket = request.pathVariable("ticker");
         return ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(this.statusInvestStockService.generateStockQuote(ticket), Stock.class)
