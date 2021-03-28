@@ -8,44 +8,44 @@ import br.com.webflux.stockquota.integration.StatusInvestClient;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.integration.dto.StockStatisticsDTO;
 import br.com.webflux.stockquota.repository.StockStatisticsReactiveRepository;
-import br.com.webflux.stockquota.service.StatusInvestStockQuoteService;
+import br.com.webflux.stockquota.service.StatusInvestStockService;
+import br.com.webflux.stockquota.service.StockQuoteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class StatusInvestStockQuoteServiceImpl implements StatusInvestStockQuoteService {
+public class StatusInvestStockQuoteServiceImpl implements StatusInvestStockService {
 
     public static final String SEARCH_QUERY = "{}";
 
     private final StatusInvestClient statusInvestClient;
-    private final ReactiveElasticsearchOperations elasticsearchTemplate;
+    private final StockQuoteService stockQuoteService;
     private final StockStatisticsReactiveRepository stockStatisticsReactiveRepository;
 
+    @Cacheable("statusInvest")
+    private List<StockDTO> getStock(String ticket) {
+        return statusInvestClient.getStock(ticket);
+    }
+
     @Override
-    public Flux<Stock> getStatusInvestStockQuote(String ticket) {
+    public Flux<Stock> generateStockQuote(String ticker) {
         try {
-            final List<StockDTO> stocks = statusInvestClient.getStock(ticket);
-            return Flux.fromStream(stocks.stream().map(StockConverter::convertEntity))
-                    .switchIfEmpty(this.fluxResponseStatusNotFoundException());
+            final List<StockDTO> stocks = this.getStock(ticker);
+            return Flux.fromStream(stocks.stream())
+                    .flatMap(stock -> stockQuoteService.getStockByTicketName(stock.getCode()))
+                    .flatMap(stockFound -> stockQuoteService.save(stockFound.withId(stockFound.getId())))
+                    .switchIfEmpty(stockQuoteService.saveAll(stocks));
         } catch (Exception ex) {
             log.error("Error to call Status Invest", ex);
         }

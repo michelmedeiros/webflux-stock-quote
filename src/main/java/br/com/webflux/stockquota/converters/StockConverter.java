@@ -6,21 +6,38 @@ import br.com.webflux.stockquota.domain.StockQuote;
 import br.com.webflux.stockquota.domain.StockStats;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.integration.dto.StockQuoteDTO;
+import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StockConverter {
 
     public static Stock convertEntity(StockDTO stock) {
         return Stock.builder()
-                .ticket(getFormattedSymbol(stock.getTicket()))
+                .ticket(stock.getCode())
                 .name(stock.getName())
+                .price(convertNumber(stock.getPrice()))
+                .variation(convertNumber(stock.getVariation()))
                 .currency(stock.getCurrency())
                 .stockExchange(stock.getStockExchange())
                 .quote(createQuote(stock.getQuote()))
                 .build();
     }
 
+    private static BigDecimal convertNumber(String value) {
+        if(Objects.nonNull(value)) {
+            final String replaceSymbol = value.replace(",", ".");
+            return new BigDecimal(replaceSymbol);
+        }
+        return BigDecimal.ZERO;
+    }
+
     private static StockQuote createQuote(StockQuoteDTO quote) {
-        return StockQuote.builder()
+        return Objects.nonNull(quote) ?
+                StockQuote.builder()
                 .symbol(getFormattedSymbol(quote.getSymbol()))
                 .ask(quote.getAsk())
                 .askSize(quote.getAskSize())
@@ -40,7 +57,7 @@ public class StockConverter {
                 .priceAvg200(quote.getPriceAvg200())
                 .volume(quote.getVolume())
                 .avgVolume(quote.getAvgVolume())
-                .build();
+                .build() : null;
     }
 
     public static Stock convertEntity(yahoofinance.Stock stock) {
@@ -56,7 +73,7 @@ public class StockConverter {
     }
 
     private static String getFormattedSymbol(String symbol) {
-        return symbol.replace(".SA", "");
+        return Objects.nonNull(symbol) ? symbol.replace(".SA", "") : null;
     }
 
     private static StockDividend createDividend(yahoofinance.Stock stock) {
@@ -119,5 +136,9 @@ public class StockConverter {
                 .volume(quote.getVolume())
                 .avgVolume(quote.getAvgVolume())
                 .build();
+    }
+
+    public static List<Stock> convertEntities(List<StockDTO> stockQuoteList) {
+        return stockQuoteList.stream().map(StockConverter::convertEntity).collect(Collectors.toList());
     }
 }

@@ -4,7 +4,7 @@ import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.exception.CustomAttributes;
 import br.com.webflux.stockquota.integration.StatusInvestClient;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
-import br.com.webflux.stockquota.service.StockQuoteReactiveService;
+import br.com.webflux.stockquota.service.StockQuoteService;
 import br.com.webflux.stockquota.service.impl.StockQuoteReactiveServiceImpl;
 import br.com.webflux.stockquota.service.impl.YahooFinancialQuoteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ public class StockQuotaReactiveControllerTest {
     private StatusInvestClient statusInvestClient;
 
     @MockBean
-    private StockQuoteReactiveService stockQuoteReactiveServiceMock;
+    private StockQuoteService stockQuoteReactiveServiceMock;
 
     @MockBean
     private StockQuoteReactiveRepository stockQuoteReactiveRepositoryMock;

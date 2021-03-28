@@ -4,7 +4,7 @@ import br.com.webflux.stockquota.converters.StockConverter;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
-import br.com.webflux.stockquota.service.StockQuoteReactiveService;
+import br.com.webflux.stockquota.service.StockQuoteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
@@ -33,7 +34,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class StockQuoteReactiveServiceImpl implements StockQuoteReactiveService {
+public class StockQuoteReactiveServiceImpl implements StockQuoteService {
 
     private final StockQuoteReactiveRepository stockQuoteRepository;
     private final ReactiveElasticsearchClient client;
@@ -63,6 +64,16 @@ public class StockQuoteReactiveServiceImpl implements StockQuoteReactiveService 
     @Override
     public Mono<Stock> save(StockDTO stockQuote) {
         return stockQuoteRepository.save(StockConverter.convertEntity(stockQuote));
+    }
+
+    @Override
+    public Flux<Stock> saveAll(List<StockDTO> stockQuoteList) {
+        return stockQuoteRepository.saveAll(StockConverter.convertEntities(stockQuoteList));
+    }
+
+    @Override
+    public Mono<Stock> save(Stock stockQuote) {
+        return stockQuoteRepository.save(stockQuote);
     }
 
     @Override

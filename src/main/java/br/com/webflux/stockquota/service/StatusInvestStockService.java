@@ -8,8 +8,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface StatusInvestStockQuoteService {
-    Flux<Stock> getStatusInvestStockQuote(String ticker);
+public interface StatusInvestStockService {
+    Flux<Stock> generateStockQuote(String ticker);
     Flux<StockStatistics> generateStockStatistics();
     Mono<StockStatistics> getStockStatisticByTicker(String ticker);
 }

@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation group: 'com.yahoofinance-api', name: 'YahooFinanceAPI', version: '3.15.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 	compile 'io.projectreactor.tools:blockhound:1.0.4.RELEASE'
 	compile 'io.projectreactor:reactor-tools:3.4.3'

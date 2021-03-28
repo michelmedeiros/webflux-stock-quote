@@ -2,9 +2,7 @@ package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
-import br.com.webflux.stockquota.integration.dto.StockQuoteDTO;
-import br.com.webflux.stockquota.service.StockQuoteReactiveService;
-import br.com.webflux.stockquota.service.impl.YahooFinancialQuoteServiceImpl;
+import br.com.webflux.stockquota.service.StockQuoteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class StockReactiveController {
 
-    private final StockQuoteReactiveService stockQuotaReactiveService;
+    private final StockQuoteService stockQuotaReactiveService;
 
     @PostMapping()
     public Mono<Stock> createStockQuote(@RequestBody StockDTO stockQuote) {

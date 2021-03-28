@@ -18,7 +18,9 @@ public class StockQuoteRouter {
         return RouterFunctions.route(GET("/client/search/{ticket}")
                 .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicket)
                 .andRoute(GET("/client/statistics/{ticker}")
-                        .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicker);
+                        .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicker)
+                .andRoute(GET("/client/stocks/generate/{ticker}")
+                        .and(accept(MediaType.APPLICATION_JSON)), handler::generateStocks);
 
     }
 
