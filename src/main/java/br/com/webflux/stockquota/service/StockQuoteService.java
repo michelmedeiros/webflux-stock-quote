@@ -16,4 +16,6 @@ public interface StockQuoteService {
     Flux<Stock> searchByTemplate(String ticket);
     Flux<Stock> searchAll();
     Flux<Stock> saveAll(List<StockDTO> stocks);
+    Flux<Stock> saveAll(Flux<StockDTO> stocks);
+
 }

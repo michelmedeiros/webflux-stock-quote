@@ -4,15 +4,12 @@ import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockStatistics;
 import br.com.webflux.stockquota.service.StatusInvestStockService;
 import br.com.webflux.stockquota.service.StockQuoteService;
-import br.com.webflux.stockquota.service.impl.StockQuoteReactiveServiceImpl;
+import br.com.webflux.stockquota.service.YahooFinancialQuoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -23,8 +20,19 @@ public class StockQuoteHandler {
     private final StockQuoteService stockQuoteReactiveService;
     private final StatusInvestStockService stockStatisticsReactiveService;
     private final StatusInvestStockService statusInvestStockService;
+    private final YahooFinancialQuoteService yahooFinancialQuoteService;
 
-    public Mono<ServerResponse> generateStocks(ServerRequest request) {
+
+    public Mono<ServerResponse> generateStatusInvestStocks(ServerRequest request) {
+        String ticket = request.pathVariable("ticker");
+        return ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(this.yahooFinancialQuoteService.generateYahooFinanceStockQuote(ticket), Stock.class)
+                .switchIfEmpty(ServerResponse.notFound().build());
+
+    }
+
+    public Mono<ServerResponse> generateYahooStocks(ServerRequest request) {
         String ticket = request.pathVariable("ticker");
         return ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -32,6 +40,7 @@ public class StockQuoteHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
 
     }
+
     public Mono<ServerResponse> findStockQuotesByTicket(ServerRequest request) {
         String ticket = request.pathVariable("ticket");
         return ok()

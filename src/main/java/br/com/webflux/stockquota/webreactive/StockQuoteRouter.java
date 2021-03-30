@@ -20,7 +20,9 @@ public class StockQuoteRouter {
                 .andRoute(GET("/client/statistics/{ticker}")
                         .and(accept(MediaType.APPLICATION_JSON)), handler::findStockQuotesByTicker)
                 .andRoute(GET("/client/stocks/generate/{ticker}")
-                        .and(accept(MediaType.APPLICATION_JSON)), handler::generateStocks);
+                        .and(accept(MediaType.APPLICATION_JSON)), handler::generateStatusInvestStocks)
+                .andRoute(GET("/client/yahoo/generate/{ticker}")
+                        .and(accept(MediaType.APPLICATION_JSON)), handler::generateYahooStocks);
 
     }
 

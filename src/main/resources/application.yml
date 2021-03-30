@@ -76,3 +76,6 @@ search:
       url: http://localhost:9300
       threads:
         io: 30
+
+target:
+  uri: http://localhost:8080

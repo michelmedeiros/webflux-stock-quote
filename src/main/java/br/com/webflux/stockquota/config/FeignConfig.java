@@ -1,10 +1,9 @@
 package br.com.webflux.stockquota.config;
 
-import br.com.webflux.stockquota.integration.StatusInvestClient;
+import br.com.webflux.stockquota.integration.feign.StatusInvestClient;
 import feign.Logger;
 import feign.codec.ErrorDecoder;
 import feign.okhttp.OkHttpClient;
-import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

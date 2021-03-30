@@ -12,6 +12,6 @@ public class SimpleCacheCustomizer {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("statusInvest", "yahoo");
+        return new ConcurrentMapCacheManager("statusInvest", "yahoo", "statistics", "stocks", "getStockByTicketName");
     }
 }

@@ -1,4 +1,4 @@
-package br.com.webflux.stockquota.integration;
+package br.com.webflux.stockquota.integration.feign;
 
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.integration.dto.StockStatisticsDTO;

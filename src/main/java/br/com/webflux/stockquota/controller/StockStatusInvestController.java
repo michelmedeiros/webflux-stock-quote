@@ -3,6 +3,7 @@ package br.com.webflux.stockquota.controller;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockStatistics;
 import br.com.webflux.stockquota.service.StatusInvestStockService;
+import br.com.webflux.stockquota.service.StatusInvestWebClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -14,6 +15,12 @@ import reactor.core.publisher.Mono;
 public class StockStatusInvestController {
 
     private StatusInvestStockService stockQuotaService;
+    private StatusInvestWebClientService statusInvestWebClientService;
+
+    @GetMapping("/webclient/generate/{ticker}")
+    public Flux<Stock> generateStocksWebClient(@PathVariable String ticker) {
+        return statusInvestWebClientService.getStocks(ticker);
+    }
 
     @GetMapping("/stocks/generate/{ticker}")
     public Flux<Stock> generateStocks(@PathVariable String ticker) {

@@ -1,10 +1,9 @@
 package br.com.webflux.stockquota.service.impl;
 
-import br.com.webflux.stockquota.converters.StockConverter;
 import br.com.webflux.stockquota.converters.StockStatisticConverter;
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.domain.StockStatistics;
-import br.com.webflux.stockquota.integration.StatusInvestClient;
+import br.com.webflux.stockquota.integration.feign.StatusInvestClient;
 import br.com.webflux.stockquota.integration.dto.StockDTO;
 import br.com.webflux.stockquota.integration.dto.StockStatisticsDTO;
 import br.com.webflux.stockquota.repository.StockStatisticsReactiveRepository;
@@ -13,7 +12,6 @@ import br.com.webflux.stockquota.service.StockQuoteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,9 +52,14 @@ public class StatusInvestStockQuoteServiceImpl implements StatusInvestStockServi
 
     @Override
     public Flux<StockStatistics> generateStockStatistics() {
-        final List<StockStatisticsDTO> stockStatistics = statusInvestClient.getStockStatistics(SEARCH_QUERY, 1);
+        final List<StockStatisticsDTO> stockStatistics = getStockStatistics();
         this.deleteAllStatistics();
         return stockStatisticsReactiveRepository.saveAll(StockStatisticConverter.convertEntity(stockStatistics));
+    }
+
+    @Cacheable("statistics")
+    private List<StockStatisticsDTO> getStockStatistics() {
+        return statusInvestClient.getStockStatistics(SEARCH_QUERY, 1);
     }
 
     @Override

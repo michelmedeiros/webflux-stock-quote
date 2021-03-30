@@ -18,10 +18,10 @@ public class StockYahooController {
 
     private final YahooFinancialQuoteServiceImpl yahooFinancialQuoteService;
 
-    @GetMapping("/search/{ticket}")
-    public Mono<Stock> getStock(@PathVariable String ticket) {
-        return yahooFinancialQuoteService.getYahooFinanceStockQuote(ticket)
-                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticket not found %s", ticket));
+    @GetMapping("/search/{ticker}")
+    public Mono<Stock> getStock(@PathVariable String ticker) {
+        return yahooFinancialQuoteService.getYahooFinanceStockQuote(ticker)
+                .switchIfEmpty(monoResponseStatusNotFoundException("Stock by ticker not found %s", ticker));
     }
 
     private <T> Mono<T> monoResponseStatusNotFoundException(String message, Object param) {

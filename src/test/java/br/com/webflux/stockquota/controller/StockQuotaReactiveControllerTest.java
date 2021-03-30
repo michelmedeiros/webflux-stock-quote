@@ -2,7 +2,7 @@ package br.com.webflux.stockquota.controller;
 
 import br.com.webflux.stockquota.domain.Stock;
 import br.com.webflux.stockquota.exception.CustomAttributes;
-import br.com.webflux.stockquota.integration.StatusInvestClient;
+import br.com.webflux.stockquota.integration.feign.StatusInvestClient;
 import br.com.webflux.stockquota.repository.StockQuoteReactiveRepository;
 import br.com.webflux.stockquota.service.StockQuoteService;
 import br.com.webflux.stockquota.service.impl.StockQuoteReactiveServiceImpl;

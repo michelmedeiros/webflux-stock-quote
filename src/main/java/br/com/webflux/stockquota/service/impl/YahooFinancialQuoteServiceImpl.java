@@ -7,6 +7,7 @@ import br.com.webflux.stockquota.service.YahooFinancialQuoteService;
 import br.com.webflux.stockquota.utils.StockUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,7 +47,7 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
     }
 
     @Override
-    public Mono<Stock> getYahooFinanceStockQuoteNonReactive(String ticker) {
+    public Mono<Stock> generateYahooFinanceStockQuote(String ticker) {
         try {
             log.info("Starting execution search by ticker {}", ticker);
             final Stock stock = StockConverter.convertEntity(getYahooStock(ticker));
@@ -60,6 +61,7 @@ public class YahooFinancialQuoteServiceImpl implements YahooFinancialQuoteServic
         }
     }
 
+    @Cacheable("yahoo")
     private yahoofinance.Stock getYahooStock(String ticker) throws IOException {
         log.info("Starting find stock in Yahoo Finance by ticker {}", ticker);
         yahoofinance.Stock stock = YahooFinance.get(StockUtils.getFormattedTicket(ticker));

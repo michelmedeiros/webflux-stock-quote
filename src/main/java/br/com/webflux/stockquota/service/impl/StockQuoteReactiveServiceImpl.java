@@ -15,6 +15,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -57,6 +58,7 @@ public class StockQuoteReactiveServiceImpl implements StockQuoteService {
     }
 
     @Override
+    @Cacheable("getStockByTicketName")
     public Mono<Stock> getStockByTicketName(String ticket) {
         return stockQuoteRepository.findFirstByTicket(ticket);
     }
@@ -69,6 +71,14 @@ public class StockQuoteReactiveServiceImpl implements StockQuoteService {
     @Override
     public Flux<Stock> saveAll(List<StockDTO> stockQuoteList) {
         return stockQuoteRepository.saveAll(StockConverter.convertEntities(stockQuoteList));
+    }
+
+    @Override
+    public Flux<Stock> saveAll(Flux<StockDTO> stocks) {
+        Flux<Stock> stockFlux = stocks.map(StockConverter::convertEntity)
+                .flatMap(this::save);
+        return stockFlux;
+
     }
 
     @Override

@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface YahooFinancialQuoteService {
     Mono<Stock> getYahooFinanceStockQuote(String ticket);
-    Mono<Stock> getYahooFinanceStockQuoteNonReactive(String ticket);
+    Mono<Stock> generateYahooFinanceStockQuote(String ticket);
 }
