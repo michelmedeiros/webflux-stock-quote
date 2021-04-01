@@ -4,11 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.annotation.Order;
 import reactor.tools.agent.ReactorDebugAgent;
 
 @Order(1)
 @Slf4j
+@EnableCaching
 @SpringBootApplication
 public class StockQuotaApplication {
 //	static {

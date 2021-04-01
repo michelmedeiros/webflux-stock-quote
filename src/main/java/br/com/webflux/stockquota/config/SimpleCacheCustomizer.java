@@ -6,12 +6,12 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@EnableCaching
+//@Configuration
+//@EnableCaching
 public class SimpleCacheCustomizer {
 
-    @Bean
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("statusInvest", "yahoo", "statistics", "stocks", "getStockByTicketName");
-    }
+//    @Bean
+//    public CacheManager cacheManager() {
+//        return new ConcurrentMapCacheManager("statusInvest", "yahoo", "statistics", "stocks", "users");
+//    }
 }
